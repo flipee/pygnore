@@ -2,7 +2,7 @@ import os
 import unittest
 
 from pygnore.api import get_templates, get_gitignore, cache
-from pygnore.exceptions import NoSupportedTemplate
+from pygnore.exceptions import UnsupportedTemplateError
 
 from urllib.error import URLError
 from unittest.mock import patch
@@ -27,7 +27,7 @@ class TestAPI(unittest.TestCase):
             self.assertEqual(generated, gitignore)
 
     def test_api_no_support(self):
-        with self.assertRaises(NoSupportedTemplate):
+        with self.assertRaises(UnsupportedTemplateError):
             get_gitignore("php")
 
     @patch("pygnore.api.urlopen", side_effect=URLError("No connection"))

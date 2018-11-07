@@ -1,2 +1,2 @@
-class NoSupportedTemplate(Exception):
+class UnsupportedTemplateError(Exception):
     pass

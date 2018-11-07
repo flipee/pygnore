@@ -4,7 +4,7 @@ from urllib.request import urlopen
 from urllib.error import URLError, HTTPError
 from urllib.parse import urljoin
 
-from pygnore.exceptions import NoSupportedTemplate
+from pygnore.exceptions import UnsupportedTemplateError
 from cachetools import cached, TTLCache
 
 GITIGNORE_SERVER = os.environ.get("GITIGNORE_SERVER", "https://gitignore.io/api/")
@@ -41,7 +41,7 @@ def get_gitignore(templates):
 
     for i in templates:
         if i.lower() not in templates_list:
-            raise NoSupportedTemplate(i)
+            raise UnsupportedTemplateError(i)
 
     formated_templates = ",".join(templates)
 
