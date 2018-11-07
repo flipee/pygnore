@@ -5,34 +5,42 @@ cache: pip
 dist: xenial
 sudo: required
 
-matrix:
-  include:
-  - python: 3.5
-    env: TOXENV=py35
-  - python: 3.6
-    env: TOXENV=py36
-  - python: 3.7
-    env: TOXENV=py37
-  - python: 3.7
-    env: TOXENV=flake8
+stages:
+  - name: test
+  - name: deploy
+    if: tag IS present
 
 install:
-- pip install -e .[test]
+  - pip install .[test]
 
 script:
-- tox
+  - tox
+
+jobs:
+  include:
+    - python: 3.5
+      env: TOXENV=py35
+    - python: 3.6
+      env: TOXENV=py36
+    - python: 3.7
+      env: TOXENV=py37
+    - python: 3.7
+      env: TOXENV=flake8
+    - stage: deploy
+      name: PyPI
+      before_deploy:
+        - echo "Releasing $TRAVIS_TAG"
+      deploy:
+        provider: pypi
+        user: flipee
+        password:
+          secure: deVcLt1OGq8Z2dKp9R9Gyvw7FqUkIY5mKPoOTHTPGc92SZUCbOPFOPMyav3B+5mUL8wsg6tnZKDPzcgHETGxzWLxZL4QtxK95gU/hf3thHC3fj70PMoEl10K+VyliU3tQX0QTfnvmIIC2NK0tdxkmAO6TvKz6NlSBzVkXCydI3FAI+3GYLUEj40dhkEmXHV2NvQBU613V3Uaj8aC1kf5a1k7EIFeW/dtLlEm1Xg32FSA96NwlMvRxHYWK2JA9O44TEQ3X9ZwyoHMMhIfAOrLv6XCxhv2UTd3j0l+npdfg85X+nnhg3u2PXvQ5NizlzIma1N3E4xSgipGD9QPwU2flqvoAK5Pcq1y+YmGekHDLbqFck0StDt+bQFVsRvsl6GcvdpPnaVOkCMoMa1StlXQRKTg0e1lfVhvv6bMhlvs59EYTP7rV4a8Q3QqoWXRkOtEzTCD/qnTs94re2JdD+aZa3ruTOaU7FBRDuOegPARqLdncPttArXosQBVa8xKxNB3hpq32jCVgtnXSDEKf+o1/Z9iS7djCCtB9cPS+jYgcs48cCUaF0ka5QFiR0hbDW6lT9MYY7z7y/aJfF/1ulFA1sXUEmhgoJwLzHR3vmqB3Zr0de80C4yN9L8n1jQjf61+bUTyEqiwSAs5RDATs+48boHPGgZIYzLNZWT7D2qlxz4=
+        distributions: sdist bdist_wheel
+        on:
+          tags: true
 
 after_success:
-- coveralls
-
-deploy:
-  provider: pypi
-  user: flipee
-  password:
-    secure: deVcLt1OGq8Z2dKp9R9Gyvw7FqUkIY5mKPoOTHTPGc92SZUCbOPFOPMyav3B+5mUL8wsg6tnZKDPzcgHETGxzWLxZL4QtxK95gU/hf3thHC3fj70PMoEl10K+VyliU3tQX0QTfnvmIIC2NK0tdxkmAO6TvKz6NlSBzVkXCydI3FAI+3GYLUEj40dhkEmXHV2NvQBU613V3Uaj8aC1kf5a1k7EIFeW/dtLlEm1Xg32FSA96NwlMvRxHYWK2JA9O44TEQ3X9ZwyoHMMhIfAOrLv6XCxhv2UTd3j0l+npdfg85X+nnhg3u2PXvQ5NizlzIma1N3E4xSgipGD9QPwU2flqvoAK5Pcq1y+YmGekHDLbqFck0StDt+bQFVsRvsl6GcvdpPnaVOkCMoMa1StlXQRKTg0e1lfVhvv6bMhlvs59EYTP7rV4a8Q3QqoWXRkOtEzTCD/qnTs94re2JdD+aZa3ruTOaU7FBRDuOegPARqLdncPttArXosQBVa8xKxNB3hpq32jCVgtnXSDEKf+o1/Z9iS7djCCtB9cPS+jYgcs48cCUaF0ka5QFiR0hbDW6lT9MYY7z7y/aJfF/1ulFA1sXUEmhgoJwLzHR3vmqB3Zr0de80C4yN9L8n1jQjf61+bUTyEqiwSAs5RDATs+48boHPGgZIYzLNZWT7D2qlxz4=
-  distributions: sdist bdist_wheel
-  on:
-    tags: true
+  - coveralls
 
 notifications:
   email: false
