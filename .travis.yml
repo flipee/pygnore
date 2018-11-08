@@ -8,7 +8,7 @@ sudo: required
 stages:
   - name: test
   - name: deploy
-    if: tag IS present
+    if: tag =~ /^v[0-9].[0-9].[0-9].*$/
 
 install:
   - pip install .[test]
@@ -28,8 +28,12 @@ jobs:
       env: TOXENV=flake8
     - stage: deploy
       name: PyPI
+      python: 3.7
+      script:
+        - echo "Deploying to PyPI..."
       before_deploy:
         - echo "Releasing $TRAVIS_TAG"
+      after success: false
       deploy:
         provider: pypi
         user: flipee
