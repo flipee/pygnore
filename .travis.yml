@@ -33,6 +33,7 @@ jobs:
         - echo "Deploying to PyPI..."
       before_deploy:
         - echo "Releasing $TRAVIS_TAG"
+      install: pip install .[deploy]
       after success: false
       deploy:
         provider: pypi

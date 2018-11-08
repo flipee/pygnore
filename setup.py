@@ -39,6 +39,9 @@ setup(
             'flake8',
             'tox-venv',
         ],
+        'deploy': [
+            'wheel',
+        ],
     },
     classifiers=[
         'Development Status :: 3 - Alpha',
