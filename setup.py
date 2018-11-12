@@ -25,6 +25,7 @@ setup(
     author_email='filipe.nascimento01@fatec.sp.gov.br',
     license='MIT',
     packages=['pygnore'],
+    test_suite='tests',
     install_requires=[
         'cachetools',
     ],
